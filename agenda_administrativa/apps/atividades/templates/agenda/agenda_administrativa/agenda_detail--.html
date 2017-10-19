@@ -1,0 +1,234 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+{% load crispy_forms_tags %}
+{% load widget_tweaks %}
+
+{% block css %}
+    <!-- DataTables -->
+    <link rel="stylesheet" href="{% static 'bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css'%}">
+    <link rel="stylesheet" href="{% static 'css/custom.css' %}">
+{% endblock %}
+
+{% block content_header %}
+    <h1>
+        Agenda Administrativa
+    </h1>
+{% endblock %}
+
+{% block content %}
+    <!-- Default box -->
+    <div class="row">
+        <div class="col-md-3">
+
+
+          <!-- Profile Image -->
+          <div class="box box-primary">
+            <div class="box-body box-profile">
+              <img class="profile-user-img img-responsive img-circle" src="{% static 'images/sp.png' %}" alt="User profile picture">
+
+              <h3 class="profile-username text-center">{{ agenda_detail.coordenador_agenda }}</h3>
+
+              <p class="text-muted text-center">Coordenador da agenda</p>
+
+              <ul class="list-group list-group-unbordered">
+                <div class="info-box {{ cor_periodo }} ">
+                    <span class="info-box-icon"><i class="glyphicon {{ info_icon }}"></i></span>
+                    <div class="info-box-content">
+
+                        <span class="info-box-text">Faltam</span>
+
+                        <span class="info-box-number">{{ tempo_restante }} dias</span>
+
+                        <div class="progress">
+                            <div class="progress-bar" style="width: 60%"></div>
+                        </div>
+
+                        <span class="progress-description">
+                                para o prazo previsto da agenda
+                        </span>
+                    </div>
+                </div>
+                <li class="list-group-item">
+
+                  <b>Data de referência</b> <a class="pull-right">{{ agenda_detail.dt_referencia|date:"d/m/Y" }}</a>
+                </li>
+                <li class="list-group-item">
+                  <b>Inicio da ação</b> <a class="pull-right">{{ agenda_detail.inicio_acao|date:"d/m/Y"  }}</a>
+                </li>
+                <li class="list-group-item">
+                  <b>Prev. final da agenda:</b> <a class="pull-right">{{ agenda_detail.dt_prev_fim_agenda|date:"d/m/Y"  }}</a>
+                </li>
+              </ul>
+
+            </div>
+            <!-- /.box-body -->
+
+          </div>
+          <!-- /.box -->
+        </div>
+        <!-- /.col -->
+        <div class="col-md-9">
+          <div class="nav-tabs-custom">
+            <ul class="nav nav-tabs">
+              <li class="active"><a href="#informacoes_basicas" data-toggle="tab">Informações básicas</a></li>
+              <li><a href="#timeline" data-toggle="tab">Movimentação</a></li>
+              <li><a href="#anexos" data-toggle="tab">Anexos</a></li>
+            </ul>
+            <div class="tab-content">
+              <div class="active tab-pane" id="informacoes_basicas">
+                <!-- Post -->
+                <div class="post">
+                     <div class="col-sm-6">
+                        <h3 class="title">Pauta</h3>
+                        <p>{{ agenda_detail.pauta }}</p>
+                     </div>
+                    <div class="col-sm-6 table-responsive">
+                        <h3 class="title">Pessoas envolvidas na agenda</h3>
+                        <table class="table table-striped">
+                            <thead>
+                            <tr>
+                                <th>Nome</th>
+                                <th>Telefone</th>
+                                <th>e-mail</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for p in agenda_detail.pessoas_envolvidas.all %}
+                                <tr>
+                                    <td>{{ p.nome }}</td>
+                                    <td>{{ p.telefone }}</td>
+                                    <td>{{ p.email }}</td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="3">
+                                        <div class="alert-info">
+                                            <h3 class="title">Não existem pessoas envolvidas nesta agenda</h3>
+                                        </div>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>    
+                    <div class="clearfix"></div> 
+                    <hr>
+                    <table class="table table-striped">
+                            <thead>
+                            <tr>
+                              <th>Esfera</th>
+                              <th>Orgão demandante</th>
+                              <th>Status</th>
+                              <th>Prioridade</th>
+                              <th>Departamento/Setor</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                              <td>{{ agenda_detail.esfera }}</td>
+                              <td>{{ agenda_detail.orgao_demandante }}</td>
+                              <td>
+                                    {% if  agenda_detail.status == True %}
+                                        <span class="label label-success">{{ agenda_detail.get_status_display }}</span>
+                                    {% else %}
+                                        <span class="label label-danger">{{ agenda_detail.get_status_display }}</span>
+                                    {% endif %}
+                              </td>
+                              <td>
+                                    {% if  agenda_detail.prioridade == 0 %}
+                                        <span class="label label-success">{{ agenda_detail.get_prioridade_display }}</span>
+                                    {% elif agenda_detail.prioridade == 1 %}
+                                        <span class="label label-warning">{{ agenda_detail.get_prioridade_display }}</span>
+                                    {% else %}
+                                        <span class="label label-danger">{{ agenda_detail.get_prioridade_display }}</span>
+
+                                    {% endif %}
+                              </td>
+                              <td>{{ agenda_detail.dpto_setor }}</td>
+                            </tr>
+                        </tbody>
+                    </table>            
+                </div>
+                <!-- /.post -->
+              </div>
+              <!-- /.tab-pane -->
+              <div class="tab-pane" id="timeline">
+                
+                <form action="" method="post">
+                    {% csrf_token %}
+                    {{ atividade_form|crispy }}
+                    <button type="submit" class="btn btn-primary"  name="gravar_movimentacao" value="Enviar" ><span class="glyphicon glyphicon-ok"></span>enviar</button>
+                </form>
+                <hr>                
+                <!-- The timeline -->
+                <ul class="timeline timeline-inverse">
+                 {% for mov in movimentacao %}
+                  <li>
+                    <div class="timeline-item">
+                      <span class="time"><i class="fa fa-clock-o"></i> {{ mov.dt_atualizacao }}</span>
+                      <h3 class="timeline-header"><a href="#">{{ mov.usuario }}</a></h3>
+                      <div class="timeline-body">
+                        {{ mov.desc_movimentacao|safe }}
+                      </div>
+                    </div>
+                  </li>
+                  {% empty %}
+                  <div class="alert alert-info"><h3 class="title">Não existem movimentações nesta </h3></div>
+                  {% endfor %}
+                </ul>
+              </div>
+              <!-- /.tab-pane -->
+              <div class="tab-pane" id="anexos">
+                <form action="" method="post" enctype="multipart/anexo_form-data">
+                    {% csrf_token %}
+                       {% for hidden in anexo_form.hidden_fields %}
+                          {{ hidden }}
+                       {% endfor %}
+
+                        {% for field in anexo_form.visible_fields %}
+                          <div class="form-group">
+                            <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                            {{ field|add_class:'form-control' }}
+                            {% for error in field.errors %}
+                              <span class="help-block">{{ error }}</span>
+                            {% endfor %}
+                          </div>
+                        {% endfor %}
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-primary"  name="gravar_anexo" value="Enviar" ><span class="glyphicon glyphicon-ok"></span>enviar</button>
+                    </div>
+                </form>
+
+                <table class="table table-striped">
+                            <thead>
+                            <tr>
+                              <th>Arquivo</th>
+                              <th>Enviado na data</th>
+                              <th>por</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for anex in anexos %}
+                            <tr>
+                              <td><a href="{{ anex.anexo.url }}">{{ anex.descricao }}</a></td>
+                              <td>{{ anex.dt_atualizacao }}</td>
+                              <td><a href="#">{{ anex.usuario }}</a></td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="3"><div class="alert alert-warning"><h3 class="title">Não existem anexos para esta agenda</h3></div></td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+              <!-- /.tab-pane -->
+            </div>
+            <!-- /.tab-content -->
+          </div>
+          <!-- /.nav-tabs-custom -->
+        </div>
+        <!-- /.col -->
+      </div>
+{% endblock %}
+

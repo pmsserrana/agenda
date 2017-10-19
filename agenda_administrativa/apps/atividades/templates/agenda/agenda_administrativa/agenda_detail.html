@@ -1,0 +1,411 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+{% load crispy_forms_tags %}
+{% load widget_tweaks %}
+
+
+{% block css %}
+<!-- DataTables -->
+<link rel="stylesheet" href="{% static 'bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css'%}"></link>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.css"></link>
+{% endblock %}
+
+{% block content_header %}
+<h1>Agenda Administrativa</h1>
+{% endblock %} {% block content %}
+<!-- Default box -->
+<div class="box">
+    <div class="box-header with-border">
+        <div class="col-sm-4">
+            <i class="glyphicon glyphicon-user">
+                <h3 class="box-title">
+                    <strong>Coordenador da agenda:</strong>
+
+                    {{ agenda_detail.coordenador_agenda }}
+                </h3>
+            </i>
+        </div>
+
+        <div class="col-sm-3">
+            <i>
+                <h3 class="box-title">
+                    <strong>Ínicio da ação:</strong>
+
+                    {{ agenda_detail.inicio_acao }}
+                </h3>
+            </i>
+        </div>
+
+        <div class="col-sm-3">
+            <i>
+                <h3 class="box-title">
+                    <strong>Prev. final da agenda:</strong>
+
+                    {{ agenda_detail.dt_prev_fim_agenda }}
+                </h3>
+            </i>
+        </div>
+        <div class="col-sm-2">
+            <a  class="btn btn-primary" href="{{ encerra_agenda }}">Encerra</a>
+        </div>
+    </div>
+
+    <div class="box-body">
+        <!-- Custom Tabs -->
+
+        <div class="nav-tabs-custom">
+            <ul class="nav nav-tabs">
+                <li class="active header">
+                    <a
+                        href="#informacoes_basicas"
+                        data-toggle="tab"
+                    >Informações básicas</a>
+                </li>
+
+                <li class="header">
+                    <a
+                        href="#movimentacao"
+                        data-toggle="tab"
+                    >Movimentação</a>
+                </li>
+
+                <li class="header">
+                    <a
+                        href="#arquivos"
+                        data-toggle="tab"
+                    >Arquivos</a>
+                </li>
+            </ul>
+
+            <div class="tab-content">
+                <div
+                    class="tab-pane active"
+                    id="informacoes_basicas"
+                >
+                    <div class="box-header with-border">
+                        <div class="col-sm-4">
+                            <div class="info-box {{ cor_periodo }}">
+                                <span class="info-box-icon">
+                                    <i class="glyphicon {{ info_icon }}"></i>
+                                </span>
+
+                                <div class="info-box-content">
+                                    <span class="info-box-text">Faltam</span>
+
+                                    <span class="info-box-number">{{ tempo_restante }}</span>
+
+                                    <div class="progress">
+                                        <div
+                                            class="progress-bar"
+                                            style="width: 60%"
+                                        ></div>
+                                    </div>
+
+                                    <span class="progress-description">
+                                        dias para o término do prazo previsto da agenda
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-8">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Data de referência</th>
+
+                                        <th>
+                                            Data de previsão para discussão da agenda
+                                        </th>
+
+                                        <th>Agenda finalizada em:</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            {{ agenda_detail.dt_referencia }}
+                                        </td>
+                                        <td>
+                                            {% if agenda_detail.dt_prev_dis_agenda %} {{ agenda_detail.dt_prev_dis_agenda }} {% else %}
+                                            <span class="badge bg-yellow">
+                                                Data de previsão de discussão não foi informada!
+                                            </span>
+                                            {% endif %}
+                                        </td>
+                                        {% if agenda_detail.dt_fim_agenda %}
+                                        <td>
+                                            {{ agenda_detail.dt_fim_agenda }}
+                                        </td>
+                                        {% else %}
+                                        <td>
+                                            <span class="badge bg-blue">
+                                                Agenda ainda ainda não foi encerrada!
+                                            </span>
+                                        </td>
+                                        {% endif %}
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-6">
+                        <h3 class="title">Pauta</h3>
+
+                        <p>{{ agenda_detail.pauta|safe }}</p>
+                    </div>
+
+                    <div class="col-sm-6 table-responsive">
+                        <h3 class="title">Pessoas envolvidas na agenda</h3>
+
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Nome</th>
+                                    <th>Telefone</th>
+                                    <th>e-mail</th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+                                {% for p in agenda_detail.pessoas_envolvidas.all %}
+
+                                <tr>
+                                    <td>{{ p.nome }}</td>
+
+                                    <td>{{ p.telefone }}</td>
+
+                                    <td>{{ p.email }}</td>
+                                </tr>
+
+                                {% empty %}
+
+                                <tr>
+                                    <td colspan="3">
+                                        <div class="alert-info">
+                                            <h3 class="title">
+                                                Não existem pessoas envolvidas nesta agenda
+                                            </h3>
+                                        </div>
+                                    </td>
+                                </tr>
+
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="col-xs-12">
+                        <hr>
+                    </div>
+
+                    <div class="col-xs-12 table-responsive">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Esfera</th>
+
+                                    <th>Orgão demandante</th>
+
+                                    <th>Status</th>
+
+                                    <th>Prioridade</th>
+
+                                    <th>Departamento/Setor</th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+                                <tr>
+                                    <td>{{ agenda_detail.esfera }}</td>
+
+                                    <td>
+                                        {{ agenda_detail.orgao_demandante }}
+                                    </td>
+
+                                    <td>
+                                        {% if agenda_detail.status == True %}
+
+                                        <span class="label label-success">
+                                            {{ agenda_detail.get_status_display }}
+                                        </span>
+
+                                        {% else %}
+
+                                        <span class="label label-danger">
+                                            {{ agenda_detail.get_status_display }}
+                                        </span>
+
+                                        {% endif %}
+                                    </td>
+
+                                    <td>
+                                        {% if agenda_detail.prioridade == 0 %}
+
+                                        <span class="label label-info">
+                                            {{ agenda_detail.get_prioridade_display }}
+                                        </span>
+
+                                        {% elif agenda_detail.prioridade == 1 %}
+
+                                        <span class="label label-warning">
+                                            {{ agenda_detail.get_prioridade_display }}
+                                        </span>
+
+                                        {% else %}
+
+                                        <span class="label label-danger">
+                                            {{ agenda_detail.get_prioridade_display }}
+                                        </span>
+
+                                        {% endif %}
+                                    </td>
+
+                                    <td>
+                                        {{ agenda_detail.dpto_setor }}
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- /.tab-pane -->
+
+                <div
+                    class="tab-pane"
+                    id="movimentacao"
+                >
+                {{ atividade_form.media.css }}
+                {{ atividade_form.media.js }}
+                   
+                <form
+                        action=""
+                        method="post"
+                    >
+                        {% csrf_token %} {{ atividade_form|crispy }}
+
+                        <button
+                            type="submit"
+                            class="btn btn-primary"
+                            name="gravar_movimentacao"
+                            value="Enviar"
+                        >
+                            <span class="glyphicon glyphicon-ok"></span>
+                            enviar
+                        </button>
+                    </form>
+                    <hr>
+                    <!-- The timeline -->
+                    <ul class="timeline timeline-inverse">
+                        {% for mov in movimentacao %}
+                        <li>
+                            <div class="timeline-item">
+                                <span class="time">
+                                    <i class="fa fa-clock-o"></i>
+                                    {{ mov.dt_atualizacao }}
+                                </span>
+
+                                <h3 class="timeline-header">
+                                    <a href="#">{{ mov.usuario }}</a>
+                                </h3>
+
+                                <div class="timeline-body">
+                                    {{ mov.desc_movimentacao|safe }}
+                                </div>
+                            </div>
+                        </li>
+
+                        {% empty %}
+
+                        <div class="alert alert-info">
+                            <h3 class="title">
+                                Não existem movimentações nesta
+                            </h3>
+                        </div>
+
+                        {% endfor %}
+                    </ul>
+                </div>
+
+                <!-- /.tab-pane -->
+
+                <div
+                    class="tab-pane"
+                    id="arquivos"
+                >
+                    <div class="col-sm-6">
+                        <form
+                            action=""
+                            method="post"
+                            enctype="multipart/anexo_form-data"
+                        >
+                            {% csrf_token %} 
+                            {{ anexo_form|crispy }}
+                     <button
+                                    type="submit"
+                                    class="btn btn-primary"
+                                    name="gravar_anexo"
+                                    value="Enviar"
+                                >
+                                    <span class="glyphicon glyphicon-ok"></span>
+                                    enviar
+                                </button>
+                                 </form>
+                    </div>
+                    
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Arquivo</th>
+
+                                <th>Enviado na data</th>
+
+                                <th>por</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            {% for anex in anexos %}
+
+                            <tr>
+                                <td>
+                                    <a href="{{ anex.anexo.url }}">{{ anex.descricao }}</a>
+                                </td>
+
+                                <td>{{ anex.dt_atualizacao }}</td>
+
+                                <td>
+                                    <a href="#">{{ anex.usuario }}</a>
+                                </td>
+                            </tr>
+
+                            {% empty %}
+
+                            <tr>
+                                <td colspan="3">
+                                    <div class="alert alert-warning">
+                                        <h3 class="title">
+                                            Não existem anexos para esta agenda
+                                        </h3>
+                                    </div>
+                                </td>
+                            </tr>
+
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- /.tab-pane -->
+            </div>
+
+            <!-- /.tab-content -->
+        </div>
+    </div>
+
+    <!-- /.box -->
+    {% block js %} {% include "includes/datatable_js.html" %}
+  
+    {% endblock %} {% endblock %}
+</div>

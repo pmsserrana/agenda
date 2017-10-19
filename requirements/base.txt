@@ -1,0 +1,49 @@
+# Versions are left out on purpose in order for you to use the latest ones.
+# After the first "pip install -r", just run "pip freeze" and add the version
+# to each package in each requirements/*.txt.
+
+# base
+Django
+
+# models
+django-model-utils
+
+#database
+psycopg2
+
+# forms
+django-crispy-forms
+django-braces
+django_select2
+django-easy-select2
+django-widget-tweaks
+# compressor
+django-compressor
+
+# cache and sessions
+redis
+django-redis
+django-memcached
+
+# rest
+djangorestframework
+markdown
+django-filter
+coreapi
+djangorestframework-jwt
+# timezone
+pytz
+
+# queue
+django-rq
+django-celery
+
+# admin
+django-filebrowser
+django-grappelli
+
+# images
+pillow
+
+# markdown
+markdown

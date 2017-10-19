@@ -1,0 +1,6 @@
+{% extends "account/base_login.html" %}
+
+{% block title %} Login {% endblock %}
+{% block content %}
+<p>Você saiu do sistema! <a href="{% url 'login' %}">Logar Novamente.</a></p>
+{% endblock %}

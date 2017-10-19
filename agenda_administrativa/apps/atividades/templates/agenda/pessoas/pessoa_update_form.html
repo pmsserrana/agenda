@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+{% load crispy_forms_tags %}
+{% block content_header %}
+
+<h1>Cadastro de pessoas</h1>
+
+{% endblock %}
+{% block content %}
+
+<!-- Default box -->
+
+<div class="box">
+    <div class="box-body">
+        <!-- Modal -->
+
+        <div
+            class="modal fade"
+            id="modal"
+            tabindex="-1"
+            role="dialog"
+            aria-labelledby="myModalLabel"
+            aria-hidden="true"
+        ></div>
+
+        <!-- /.modal -->
+        <!-- forms -->
+
+        <div class="col-sm-6">
+            <form method="post">
+                {% include "includes/form_fields.html" %}
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- THE MODAL WE WILL BE USING -->
+
+<div
+    class="modal fade"
+    id="modal-book"
+>
+    <div class="modal-dialog">
+        <div class="modal-content"></div>
+    </div>
+</div>
+
+<!-- /.box -->
+{% block js %}
+        {% include "includes/datatable_js.html" %}
+
+<script src="http://malsup.github.com/jquery.form.js"></script>
+{% endblock %}
+{% endblock %}

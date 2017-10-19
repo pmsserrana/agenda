@@ -1,0 +1,49 @@
+.post {
+    color: #3e3636 !important;
+}
+
+.box .box-success .box-solid {
+    width: 106% !important;
+}
+
+.profile-user-img {
+    width: 78px !important;
+}
+
+.profile-username {
+    font-size: 17px;
+    margin-top: 5px;
+}
+
+.timeline > li > .timeline-item > .time {
+    color: #383535 !important;
+    float: right;
+    padding: 10px;
+    font-size: 12px;
+}
+
+
+.select2-container--default .select2-selection--multiple .select2-selection__choice {
+    background-color: #495e83 !important;
+
+}
+
+.select2-container{ width: 100% !important; }
+
+.select2-container--default .select2-selection--single .select2-selection__rendered {
+    color: #444;
+    line-height: 20px !important;
+}
+
+.select2-container--default .select2-selection--single {
+    background-color: #fff;
+    border: 1px solid #d2d6de !important;
+    border-radius: 0px !important;
+}
+
+.select2-container--default .select2-selection--multiple {
+    background-color: white;
+    border: 1px solid #d2d6de !important;
+    border-radius: 0px !important;
+    cursor: text;
+}

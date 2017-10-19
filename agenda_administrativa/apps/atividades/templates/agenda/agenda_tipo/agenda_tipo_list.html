@@ -1,0 +1,61 @@
+{% extends "base.html" %} {% load staticfiles %} {% block css %}
+    <!-- DataTables -->
+    <link rel="stylesheet" href="{% static 'bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css'%}"> {% endblock %} {% block content_header %}
+    <h1>
+        Tipo de agenda
+    </h1>
+{% endblock %} {% block content %}
+    <!-- Default box -->
+    <div class="box">
+        <div class="box-header with-border">
+            <a class="btn btn-primary" href="{% url 'atividades:agenda_tipo_create' %}">Incluir</a>
+            <div class="box-tools pull-right">
+                <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="Collapse">
+                    <i class="fa fa-minus"></i>
+                </button>
+                <button type="button" class="btn btn-box-tool" data-widget="remove" data-toggle="tooltip" title="Remove">
+                    <i class="fa fa-times"></i>
+                </button>
+            </div>
+        </div>
+        <div class="box-body">
+            <!-- Modal -->
+            <div class="modal fade" id="modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            </div>
+            <!-- /.modal -->
+            <table id="tbdatatable" class="table table-bordered table-striped">
+                <thead>
+                <tr>
+                    <th>Tipo</th>
+                    <th>Editar</th>
+                    <th>Deletar</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for agenda_tipo in agenda_tipos %}
+                    <tr>
+                        <td>{{ agenda_tipo.tipo }}</td>
+                        <td><a href="{% url 'atividades:agenda_tipo_update' agenda_tipo.pk %}" class="glyphicon glyphicon-edit"></a></td>
+                        <td><a href="{% url 'atividades:agenda_tipo_delete' agenda_tipo.pk %}" class="glyphicon glyphicon-remove-circle"></a></td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="4">
+                            <h1 class="center">Não existem dados a serem exibidos</h1>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <!-- THE MODAL WE WILL BE USING -->
+        <div class="modal fade" id="modal-book">
+            <div class="modal-dialog">
+                <div class="modal-content"></div>
+            </div>
+        </div>
+    </div>
+    <!-- /.box -->
+    {% block js %} {% include "includes/datatable_js.html" %}
+        <script src="http://malsup.github.com/jquery.form.js"></script>
+    {% endblock %} {% endblock %}

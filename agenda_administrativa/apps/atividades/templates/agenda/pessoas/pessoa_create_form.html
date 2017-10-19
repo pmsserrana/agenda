@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+{% load crispy_forms_tags %}
+{% block content_header %}
+
+<h1>Cadastro de Pessoas</h1>
+
+{%block css%}
+    {{form.media.css}}
+{% endblock %}
+
+{% endblock %}
+
+{% block content %}
+
+<!-- Default box -->
+
+<div class="box">
+    <div class="box-body">
+        <div class="col-sm-6">
+            {% csrf_token %}
+                {% crispy form %}
+        </div>
+    </div>
+
+    {% block js %}
+            {% include "includes/jquery_maskplugin.html" %}
+
+    <script>
+        var selector = document.getElementById("id_telefone");
+                $(document).ready(function(){
+                   $(selector).inputmask("99-999999999");  //static mask
+                   $(selector).inputmask({removeMaskOnSubmit: true});                  
+                   
+                });
+    </script>
+
+    {% endblock %}
+</div>
+
+{% endblock %}
