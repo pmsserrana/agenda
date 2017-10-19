@@ -71,5 +71,6 @@ node_modules/
 agenda_administrativa/assets-src/vendor/
 .sass-cache/
 *.vscode
-agenda.sublime-project
-agenda.sublime-workspace
+*agenda.sublime-project
+*agenda.sublime-workspace
+*.idea
