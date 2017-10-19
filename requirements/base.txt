@@ -47,3 +47,7 @@ pillow
 
 # markdown
 markdown
+
+# ckeditor
+django-ckeditor
+

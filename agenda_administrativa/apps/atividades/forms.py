@@ -7,12 +7,6 @@ from crispy_forms.layout import Submit, Layout, Div, Fieldset
 
 from ckeditor.widgets import CKEditorWidget
 from django_select2.forms import Select2Widget, Select2MultipleWidget
-
-from localflavor.br.forms import BRPhoneNumberField
-
-from input_mask.contrib.localflavor.br.widgets import BRPhoneNumberInput
-
-
 from .mixins import FormActionMixin
 
 from .models import (
@@ -39,7 +33,7 @@ class PessoasEnvolvidasAgendaForm(FormActionMixin, forms.ModelForm):
                                      formnovalidate='formnovalidate',))
         self.helper.layout = Layout(
             Field('nome'),
-            Field(PrependedText('telefone', '<i class="glyphicon glyphicon-earphone"></i>')),
+            Field(PrependedText('telefone', '<i class="glyphicon glyphicon-earphone"></i>'), help_text='teste'),
             Field(PrependedText('email', '@')),
             Field('funcionario')           
         )
@@ -116,30 +110,17 @@ class AgendaTipoForm(FormActionMixin, forms.ModelForm):
 class AgendaAdministrativaForm(FormActionMixin, forms.ModelForm):
     dt_referencia = forms.DateField(label='data de referência', input_formats=["%d/%m/%Y", ], widget=forms.DateInput(format='%d/%m/%Y'))
     inicio_acao = forms.DateField(label='ínicio da ação', input_formats=["%d/%m/%Y", ], widget=forms.DateInput(format='%d/%m/%Y'))
-    dt_prev_dis_agenda = forms.DateField(label='dt. prev. duscussão da agenda', input_formats=["%d/%m/%Y", ], widget=forms.DateInput(format='%d/%m/%Y'))
+    dt_prev_dis_agenda = forms.DateField(label='dt. prev. duscussão da agenda', input_formats=["%d/%m/%Y", ], widget=forms.DateInput(format='%d/%m/%Y'), required=False)
     dt_prev_fim_agenda = forms.DateField(label='dt. prev. fim da agenda', input_formats=["%d/%m/%Y", ], widget=forms.DateInput(format='%d/%m/%Y'))
     pauta = forms.CharField(widget=CKEditorWidget())
     # tipo_agenda = forms.CharField(widget=Select2Widget)
-    compartilhada = forms.TypedChoiceField(
-       label="Agenda compartilhada",
-       choices=((True, "Sim"), (False, "Não")),
-       coerce=lambda x: bool(int(x)),
-       widget=forms.RadioSelect,
-       initial=True,
-       required=True)
-
-    prioridade = forms.TypedChoiceField(
-       label="Prioridade",
-       choices=((0, "Baixa"), (1, "Média"), (2, "Alta")),
-       coerce=lambda x: bool(int(x)),
-       widget=forms.RadioSelect,
-       initial=True,
-       required=True)
+    compartilhada = forms.TypedChoiceField(label='compartilhada', coerce=lambda x: x =='True', choices=((True, 'Sim'), (False, 'Não')), widget=forms.RadioSelect, initial=True)
 
     def __init__(self, *args, **kwargs):
         super(AgendaAdministrativaForm, self).__init__(*args, **kwargs)
         self.helper = FormHelper()
         self.helper.form_method = 'post'
+        self.helper.form_action = '.'
         self.helper.form_class = 'form-horizontal'
         self.helper.label_class = 'col-lg-2'
         self.helper.field_class = 'col-lg-8'
@@ -151,22 +132,23 @@ class AgendaAdministrativaForm(FormActionMixin, forms.ModelForm):
         self.helper.layout = Layout(
           TabHolder(
               Tab('Pauta',
-                       InlineRadios('compartilhada'),
-                       Field(PrependedText('dt_referencia', '<i class="glyphicon glyphicon-calendar"></i>'), css_class='datepicker'),
-                       'pauta'),
+                InlineRadios('compartilhada'),
+                Field(PrependedText('dt_referencia', '<i class="glyphicon glyphicon-calendar"></i>'), css_class='datepicker'),
+                'pauta'),
 
               Tab('Outras Informações',
-                       'tipo_agenda',
-                       'pessoas_envolvidas',
-                       PrependedText('inicio_acao', '<i class="glyphicon glyphicon-calendar"></i>'),
-                       'esfera',
-                       'orgao_demandante',
-                       'coordenador_agenda',
-                       InlineRadios('prioridade'),
-                       'dpto_setor',
-                       PrependedText('fim_acao', '<i class="glyphicon glyphicon-calendar"></i>'),
-                       PrependedText('dt_prev_dis_agenda', '<i class="glyphicon glyphicon-calendar"></i>'),
-                       PrependedText('dt_prev_fim_agenda', '<i class="glyphicon glyphicon-calendar"></i>'))
+                'tipo_agenda',
+                'pessoas_envolvidas',
+                PrependedText('inicio_acao', '<i class="glyphicon glyphicon-calendar"></i>'),
+                'esfera',
+                'orgao_demandante',
+                'coordenador_agenda',
+                InlineRadios('prioridade'),
+                'dpto_setor',
+                PrependedText('fim_acao', '<i class="glyphicon glyphicon-calendar"></i>'),
+                PrependedText('dt_prev_dis_agenda', '<i class="glyphicon glyphicon-calendar"></i>'),
+                PrependedText('dt_prev_fim_agenda', '<i class="glyphicon glyphicon-calendar"></i>'))
+
           )) 
 
     class Meta:

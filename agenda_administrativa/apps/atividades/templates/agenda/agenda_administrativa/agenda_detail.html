@@ -90,6 +90,7 @@
                                 </span>
 
                                 <div class="info-box-content">
+                                    {% if tempo_restante >= 0 %}
                                     <span class="info-box-text">Faltam</span>
 
                                     <span class="info-box-number">{{ tempo_restante }}</span>
@@ -100,10 +101,12 @@
                                             style="width: 60%"
                                         ></div>
                                     </div>
-
                                     <span class="progress-description">
                                         dias para o término do prazo previsto da agenda
                                     </span>
+                                    {% else %}
+                                        <span class="info-box-number">Prazo previsto para término foi encerrado!</span>
+                                    {% endif %}
                                 </div>
                             </div>
                         </div>

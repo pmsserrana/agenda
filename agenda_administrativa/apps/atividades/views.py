@@ -249,6 +249,7 @@ def agenda_detail(request, pk):
     difftime = date1 - date2
     tempo_restante = difftime.days
 
+
     if (tempo_restante < 15) and (tempo_restante > 10):
         cor_periodo = 'bg-yellow'
         info_icon = 'glyphicon-warning-sign'
@@ -257,9 +258,12 @@ def agenda_detail(request, pk):
         cor_periodo = 'bg-red'
         info_icon = 'glyphicon-thumbs-down'
 
-    else:
+    elif tempo_restante > 15:
         cor_periodo = 'bg-green'
         info_icon = 'glyphicon-thumbs-up'
+    else:
+        cor_periodo = 'bg-red'
+        info_icon = 'glyphicon-thumbs-down'
 
     # deal with forms
     atividade_form = AgendaMovimentacaoForm
@@ -309,6 +313,17 @@ class AgendaEncerradaDetail(DetailView):
         context = super(AgendaEncerradaDetail, self).get_context_data(**kwargs)
         context['movimentacao'] = AgendaMovimentacao.objects.filter(agenda_administrativa=self.kwargs['pk'])
         context['anexos'] = AgendaAnexos.objects.filter(agenda_administrativa=self.kwargs['pk'])
+
+        date1 = AgendaAdministrativa.objects.values_list('dt_fim_agenda', flat=True).get(pk=self.kwargs['pk'])
+        date2 = AgendaAdministrativa.objects.values_list('inicio_acao', flat=True).get(pk=self.kwargs['pk'])  
+        
+        difftime = date1 - date2
+
+        context['tempo_corrido'] = difftime.days
+
+        
+
+
         return context
 
     def get_queryset(self):
@@ -323,7 +338,21 @@ class AgendaAdministrativaCreateView(LoginRequiredMixin, CreateView):
     form_class = AgendaAdministrativaForm
     template_name = 'agenda/agenda_administrativa/agenda_create_form.html'
 
-    success_url = reverse_lazy('atividades:agenda_list')
+    success_url = reverse_lazy('atividades:agenda_compartilhada')
+
+    def form_valid(self, form):
+        obj = form.save(commit=False)
+        obj.usuario = self.request.user
+        obj.status = True
+        return super(AgendaAdministrativaCreateView, self).form_valid(form)
+
+
+class AgendaAdministrativaCreateView(LoginRequiredMixin, CreateView):
+    model = AgendaAdministrativa
+    form_class = AgendaAdministrativaForm
+    template_name = 'agenda/agenda_administrativa/agenda_create_form.html'
+
+    success_url = reverse_lazy('atividades:agenda_compartilhada')
 
     def form_valid(self, form):
         obj = form.save(commit=False)
@@ -334,9 +363,9 @@ class AgendaAdministrativaCreateView(LoginRequiredMixin, CreateView):
 
 class AgendaEncerraRedirectView(RedirectView):
 
-    def get(self, request, args, **kwargs):
+    def get_redirect_url(self, **kwargs):
         agenda_id = self.kwargs.get('id', None)
         agenda = AgendaAdministrativa.objects.get(pk=agenda_id)
         agenda.close()
-        self.url = '/'
-        return super(AgendaEncerraRedirectView, self).get(request, args, **kwargs)
+
+        return reverse_lazy('atividades:agenda_compartilhada')

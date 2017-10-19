@@ -29,9 +29,12 @@
         <div class="col-sm-3">
             <i>
                 <h3 class="box-title">
-                    <strong>Ínicio da ação:</strong>
-
-                    {{ encerrada_detail.inicio_acao }}
+                    Tempo de duração da agenda:
+                    {% if tempo_corrido == 1 %}
+                        <strong>{{ tempo_corrido }} dia</strong>
+                    {% else %}
+                        <strong>{{ tempo_corrido }} dias</strong>
+                    {% endif %}
                 </h3>
             </i>
         </div>
@@ -48,14 +51,12 @@
                         data-toggle="tab"
                     >Informações básicas</a>
                 </li>
-
                 <li class="header">
                     <a
                         href="#movimentacao"
                         data-toggle="tab"
                     >Movimentação</a>
                 </li>
-
                 <li class="header">
                     <a
                         href="#arquivos"
@@ -63,7 +64,6 @@
                     >Arquivos</a>
                 </li>
             </ul>
-
             <div class="tab-content">
                 <div
                     class="tab-pane active"
@@ -79,7 +79,7 @@
                                         <th>Data de referência</th>
 
                                         <th>
-                                            Data de previsão para discussão da agenda
+                                           Ínicio da ação
                                         </th>
 
                                         <th>Agenda finalizada em:</th>
@@ -93,13 +93,7 @@
                                         </td>
 
                                         <td>
-                                            {% if encerrada_detail.dt_prev_dis_agenda %} {{ encerrada_detail.dt_prev_dis_agenda }} {% else %}
-
-                                            <span class="badge bg-yellow">
-                                                Data de previsão de discussão não foi informada!
-                                            </span>
-
-                                            {% endif %}
+                                           {{ encerrada_detail.inicio_acao }}
                                         </td>
 
                                         {% if encerrada_detail.dt_fim_agenda %}
