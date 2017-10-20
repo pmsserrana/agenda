@@ -19,7 +19,7 @@
         <div class="col-sm-4">
             <i class="glyphicon glyphicon-user">
                 <h3 class="box-title">
-                    <strong>Coordenador da agenda:</strong>
+                    <strong>Coordenador:</strong>
 
                     {{ agenda_detail.coordenador_agenda }}
                 </h3>
@@ -31,7 +31,7 @@
                 <h3 class="box-title">
                     <strong>Ínicio da ação:</strong>
 
-                    {{ agenda_detail.inicio_acao }}
+                    {{ agenda_detail.inicio_acao|date:"d/m/Y" }}
                 </h3>
             </i>
         </div>
@@ -41,13 +41,14 @@
                 <h3 class="box-title">
                     <strong>Prev. final da agenda:</strong>
 
-                    {{ agenda_detail.dt_prev_fim_agenda }}
+                    {{ agenda_detail.dt_prev_fim_agenda|date:"d/m/Y" }}
                 </h3>
             </i>
         </div>
         <div class="col-sm-2">
-            <a  class="btn btn-primary" href="{{ encerra_agenda }}">Encerra</a>
+            <span class='username'><a href="{{ encerra_agenda }}">Encerrar</a> | <a href="{% url 'atividades:agenda_update' agenda_detail.pk %}">Alterar</a> | <a href="{% url 'atividades:agenda_delete' agenda_detail.pk %}">Excluir</a></span>
         </div>
+        
     </div>
 
     <div class="box-body">

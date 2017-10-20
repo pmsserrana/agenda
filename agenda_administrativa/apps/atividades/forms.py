@@ -22,7 +22,7 @@ from .models import (
 
 
 class PessoasEnvolvidasAgendaForm(FormActionMixin, forms.ModelForm):
-    
+    telefone = forms.CharField(label='telefone',widget=forms.TextInput(attrs={'placeholder': '(00) 000000000'}))
     def __init__(self, *args, **kwargs):
         super(PessoasEnvolvidasAgendaForm, self).__init__(*args, **kwargs)
         self.helper = FormHelper()

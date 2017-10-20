@@ -40,6 +40,8 @@ from .views import (
     AgendaEncerradaDetail,
     AgendaAdministrativaCreateView,
     #AgendaCompartilhadaDetailView,
+    AgendaAdministrativaUpdateView,
+    AgendaDeleteView,
     AgendaEncerraRedirectView
 )
 
@@ -82,6 +84,9 @@ urlpatterns = [
     
     #url(r'^agenda-movimentacao/create/$', AgendaMovimentacaoView.as_view(), name='agenda_movimentacao_create'),
     url(r'^agenda-administrativa/create/$', AgendaAdministrativaCreateView.as_view(), name='agenda_create'),
+    url(r'^agenda-administrativa/update/(?P<pk>\d+)$', AgendaAdministrativaUpdateView.as_view(), name='agenda_update'),
+    url(r'^agenda-administrativa/delete/(?P<pk>\d+)$', AgendaDeleteView.as_view(), name='agenda_delete'),
+
     url(r'^(?P<pk>\d+)/$', AgendaEncerraRedirectView.as_view(), name='encerra_agenda'),
 
 

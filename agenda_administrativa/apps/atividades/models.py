@@ -143,11 +143,6 @@ class AgendaAdministrativa(models.Model):
         verbose_name_plural = 'Agendas Administrativas'
         db_table = 'tb_agenda_administrativa'
 
-    def close(self):
-        self.status = False
-        self.dt_fim_agenda = datetime.date.today()
-        self.save()
-        return reverse_lazy('atividades:agenda_compartilhada')
 
     def save(self, *args, **kwargs):
         if self.inicio_acao < self.dt_referencia:

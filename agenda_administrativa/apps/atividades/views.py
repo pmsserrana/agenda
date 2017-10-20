@@ -1,3 +1,4 @@
+import datetime
 from django.contrib.auth.decorators import login_required
 
 from django.views.generic import (
@@ -235,11 +236,7 @@ def agenda_detail(request, pk):
 
     anexos = AgendaAnexos.objects.filter(agenda_administrativa=pk)
 
-    get_agenda = AgendaAdministrativa.objects.get(pk=pk)
-
-    encerra_agenda = get_agenda.close()
-
-
+      
     template_name = 'agenda/agenda_administrativa/agenda_detail.html'
 
     # time operations diff
@@ -248,7 +245,6 @@ def agenda_detail(request, pk):
 
     difftime = date1 - date2
     tempo_restante = difftime.days
-
 
     if (tempo_restante < 15) and (tempo_restante > 10):
         cor_periodo = 'bg-yellow'
@@ -321,9 +317,6 @@ class AgendaEncerradaDetail(DetailView):
 
         context['tempo_corrido'] = difftime.days
 
-        
-
-
         return context
 
     def get_queryset(self):
@@ -347,7 +340,7 @@ class AgendaAdministrativaCreateView(LoginRequiredMixin, CreateView):
         return super(AgendaAdministrativaCreateView, self).form_valid(form)
 
 
-class AgendaAdministrativaCreateView(LoginRequiredMixin, CreateView):
+class AgendaAdministrativaUpdateView(LoginRequiredMixin, UpdateView):
     model = AgendaAdministrativa
     form_class = AgendaAdministrativaForm
     template_name = 'agenda/agenda_administrativa/agenda_create_form.html'
@@ -361,11 +354,17 @@ class AgendaAdministrativaCreateView(LoginRequiredMixin, CreateView):
         return super(AgendaAdministrativaCreateView, self).form_valid(form)
 
 
+class AgendaDeleteView(LoginRequiredMixin, DeleteView):
+    model = AgendaAdministrativa
+    template_name = 'delete_base.html'
+    success_url = reverse_lazy('atividades:agenda_compartilhada')
+
+
 class AgendaEncerraRedirectView(RedirectView):
 
     def get_redirect_url(self, **kwargs):
-        agenda_id = self.kwargs.get('id', None)
-        agenda = AgendaAdministrativa.objects.get(pk=agenda_id)
-        agenda.close()
-
+        agenda = get_object_or_404(AgendaAdministrativa, self.kwargs['pk'])
+        agenda.status = False
+        agenda.dt_fim_agenda = datetime.date.today()
+        self.save()
         return reverse_lazy('atividades:agenda_compartilhada')

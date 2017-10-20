@@ -28,11 +28,9 @@
 
     <script>
         var selector = document.getElementById("id_telefone");
-                $(document).ready(function(){
-                   $(selector).inputmask("99-999999999");  //static mask
-                   $(selector).inputmask({removeMaskOnSubmit: true});                  
-                   
-                });
+        $(document).ready(function(){
+        $(selector).inputmask("99 999999999",{placeholder:" ", clearMaskOnLostFocus: true});
+        }); 
     </script>
 
     {% endblock %}
