@@ -46,7 +46,7 @@
             </i>
         </div>
         <div class="col-sm-2">
-            <span class='username'><a href="{{ encerra_agenda }}">Encerrar</a> | <a href="{% url 'atividades:agenda_update' agenda_detail.pk %}">Alterar</a> | <a href="{% url 'atividades:agenda_delete' agenda_detail.pk %}">Excluir</a></span>
+            <span class='username'><a href="{% url 'atividades:encerra_agenda' agenda_detail.pk %}">Encerrar</a> | <a href="{% url 'atividades:agenda_update' agenda_detail.pk %}">Alterar</a> | <a href="{% url 'atividades:agenda_delete' agenda_detail.pk %}">Excluir</a></span>
         </div>
         
     </div>

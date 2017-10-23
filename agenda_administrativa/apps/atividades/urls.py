@@ -87,7 +87,7 @@ urlpatterns = [
     url(r'^agenda-administrativa/update/(?P<pk>\d+)$', AgendaAdministrativaUpdateView.as_view(), name='agenda_update'),
     url(r'^agenda-administrativa/delete/(?P<pk>\d+)$', AgendaDeleteView.as_view(), name='agenda_delete'),
 
-    url(r'^(?P<pk>\d+)/$', AgendaEncerraRedirectView.as_view(), name='encerra_agenda'),
+    url(r'^agenda-detalhe/encerra/(?P<pk>\d+)/$', AgendaEncerraRedirectView.as_view(), name='encerra_agenda'),
 
 
 ]

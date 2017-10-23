@@ -12,7 +12,7 @@ from django.views.generic import (
 )
 
 from django.urls import reverse, reverse_lazy
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 
 
 from braces.views import LoginRequiredMixin
@@ -229,14 +229,14 @@ class AgendaCompartilhadaListView(LoginRequiredMixin, ListView):
 @login_required(login_url='/login/')
 def agenda_detail(request, pk):
     # agenda detail
-    agenda_detail = get_object_or_404(AgendaAdministrativa, pk=pk)
+    agenda_detail = get_object_or_404(AgendaAdministrativa.objects.filter(status='True'), pk=pk)
 
     # filter movimentacao
     movimentacao = AgendaMovimentacao.objects.filter(agenda_administrativa=pk)
 
     anexos = AgendaAnexos.objects.filter(agenda_administrativa=pk)
 
-      
+     
     template_name = 'agenda/agenda_administrativa/agenda_detail.html'
 
     # time operations diff
@@ -273,6 +273,8 @@ def agenda_detail(request, pk):
                 new_atividade.agenda_administrativa = agenda_detail
                 new_atividade.usuario = request.user
                 new_atividade.save()
+                return redirect('atividades:agenda_compartilhada_detail', pk)
+
             anexo_form = AgendaAnexoForm(prefix="agenda_anexo")
 
         elif 'gravar_anexo' in request.POST:
@@ -283,6 +285,8 @@ def agenda_detail(request, pk):
                 new_anexo.agenda_administrativa = agenda_detail
                 new_anexo.usuario = request.user
                 new_anexo.save()
+                return redirect('atividades:agenda_compartilhada_detail', pk)
+            
             atividade_form = AgendaMovimentacaoForm(prefix="agenda_atividade")
     else:
         atividade_form = AgendaMovimentacaoForm(prefix="agenda_atividade")
@@ -363,8 +367,9 @@ class AgendaDeleteView(LoginRequiredMixin, DeleteView):
 class AgendaEncerraRedirectView(RedirectView):
 
     def get_redirect_url(self, **kwargs):
-        agenda = get_object_or_404(AgendaAdministrativa, self.kwargs['pk'])
+        agenda_id = self.kwargs.get('pk')
+        agenda = get_object_or_404(AgendaAdministrativa.objects.filter(status=True), pk=agenda_id)
         agenda.status = False
         agenda.dt_fim_agenda = datetime.date.today()
-        self.save()
-        return reverse_lazy('atividades:agenda_compartilhada')
+        agenda.save()
+        return reverse('atividades:agenda_compartilhada')
