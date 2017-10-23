@@ -181,19 +181,7 @@
               <div class="tab-pane" id="anexos">
                 <form action="" method="post" enctype="multipart/anexo_form-data">
                     {% csrf_token %}
-                       {% for hidden in anexo_form.hidden_fields %}
-                          {{ hidden }}
-                       {% endfor %}
-
-                        {% for field in anexo_form.visible_fields %}
-                          <div class="form-group">
-                            <label for="{{ field.id_for_label }}">{{ field.label }}</label>
-                            {{ field|add_class:'form-control' }}
-                            {% for error in field.errors %}
-                              <span class="help-block">{{ error }}</span>
-                            {% endfor %}
-                          </div>
-                        {% endfor %}
+                    {{ anexo_form|crispy }}
                     <div class="form-group">
                         <button type="submit" class="btn btn-primary"  name="gravar_anexo" value="Enviar" ><span class="glyphicon glyphicon-ok"></span>enviar</button>
                     </div>

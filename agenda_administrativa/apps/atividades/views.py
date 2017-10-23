@@ -355,7 +355,7 @@ class AgendaAdministrativaUpdateView(LoginRequiredMixin, UpdateView):
         obj = form.save(commit=False)
         obj.usuario = self.request.user
         obj.status = True
-        return super(AgendaAdministrativaCreateView, self).form_valid(form)
+        return super(AgendaAdministrativaUpdateView, self).form_valid(form)
 
 
 class AgendaDeleteView(LoginRequiredMixin, DeleteView):

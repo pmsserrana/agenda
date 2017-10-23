@@ -89,5 +89,4 @@ urlpatterns = [
 
     url(r'^agenda-detalhe/encerra/(?P<pk>\d+)/$', AgendaEncerraRedirectView.as_view(), name='encerra_agenda'),
 
-
 ]

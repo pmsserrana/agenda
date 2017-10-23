@@ -49,6 +49,7 @@ PROJECT_APPS = [
     # local apps
     'atividades.apps.AtividadesConfig',
     'account.apps.AccountConfig',
+    'relatorios.apps.RelatoriosConfig',
 
     # admin
     # grappelli

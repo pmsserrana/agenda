@@ -55,6 +55,7 @@ urlpatterns = [
 
     # local apps
     url(r'^', include('atividades.urls', namespace='atividades', app_name='atividades')),
+    url(r'^', include('relatorios.urls', namespace='relatorio', app_name='relatorios')),
 ]
 
 if settings.DEBUG:

@@ -20,41 +20,37 @@
             <i class="glyphicon glyphicon-user">
                 <h3 class="box-title">
                     <strong>Coordenador:</strong>
-
                     {{ agenda_detail.coordenador_agenda }}
                 </h3>
             </i>
         </div>
-
         <div class="col-sm-3">
             <i>
                 <h3 class="box-title">
                     <strong>Ínicio da ação:</strong>
-
                     {{ agenda_detail.inicio_acao|date:"d/m/Y" }}
                 </h3>
             </i>
         </div>
-
         <div class="col-sm-3">
             <i>
                 <h3 class="box-title">
                     <strong>Prev. final da agenda:</strong>
-
                     {{ agenda_detail.dt_prev_fim_agenda|date:"d/m/Y" }}
                 </h3>
             </i>
         </div>
         <div class="col-sm-2">
-            <span class='username'><a href="{% url 'atividades:encerra_agenda' agenda_detail.pk %}">Encerrar</a> | <a href="{% url 'atividades:agenda_update' agenda_detail.pk %}">Alterar</a> | <a href="{% url 'atividades:agenda_delete' agenda_detail.pk %}">Excluir</a></span>
+            <span class='username'><a href="{% url 'atividades:encerra_agenda' agenda_detail.pk %}">Encerrar</a> | 
+                <a href="{% url 'atividades:agenda_update' agenda_detail.pk %}">Editar</a> | 
+                <a href="{% url 'atividades:agenda_delete' agenda_detail.pk %}">Excluir</a> | 
+                <a href="{% url 'relatorios:agenda_relatorio' agenda_detail.pk %}"><span class="glyphicon glyphicon-print"></span></a>
+            </span>
         </div>
-        
     </div>
-
     <div class="box-body">
         <!-- Custom Tabs -->
-
-        <div class="nav-tabs-custom">
+       <div class="nav-tabs-custom">
             <ul class="nav nav-tabs">
                 <li class="active header">
                     <a
@@ -69,7 +65,6 @@
                         data-toggle="tab"
                     >Movimentação</a>
                 </li>
-
                 <li class="header">
                     <a
                         href="#arquivos"
@@ -246,7 +241,7 @@
                                     <td>
                                         {% if agenda_detail.prioridade == 0 %}
 
-                                        <span class="label label-info">
+                                        <span class="label label-success">
                                             {{ agenda_detail.get_prioridade_display }}
                                         </span>
 
@@ -283,11 +278,12 @@
                 {{ atividade_form.media.css }}
                 {{ atividade_form.media.js }}
                    
-                <form
+                    <form
                         action=""
                         method="post"
                     >
-                        {% csrf_token %} {{ atividade_form|crispy }}
+                        {% csrf_token %} 
+                        {{ atividade_form|crispy }}
 
                         <button
                             type="submit"
@@ -324,7 +320,7 @@
 
                         <div class="alert alert-info">
                             <h3 class="title">
-                                Não existem movimentações nesta
+                                Não existem movimentações nesta agenda
                             </h3>
                         </div>
 
